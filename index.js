@@ -34,7 +34,6 @@ async function run() {
             const size = parseInt((req.query.size));
             let allProduct;
             const count = await cursor.count();
-            console.log(req.query);
             if (page) {
                 allProduct = await cursor.skip(page * size).limit(size).toArray()
             }
@@ -51,7 +50,7 @@ async function run() {
             });
         })
 
-        // post product by keys
+        // post product by keys-------------------------------------------
         app.post('/allProducts/bykeys' ,async (req , res) => {
             const keys = req.body;
             const query = {key: {$in : keys}};
@@ -59,10 +58,9 @@ async function run() {
             res.json(products);
         });
 
-        // add order api
+        // add order api---------------------------------------------------
         app.post('/orders' , async (req , res) => {
             const order = req.body;
-            console.log(order);
             const result = await orderCollection.insertOne(order);
             res.json(result);
         })
@@ -73,9 +71,6 @@ async function run() {
     }
 }
 run().catch(console.dir);
-
-
-
 
 
 app.get('/', (req, res) => {
