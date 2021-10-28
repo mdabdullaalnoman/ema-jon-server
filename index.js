@@ -24,6 +24,7 @@ async function run() {
         // create a database on mongodb
         const database = client.db("ema_jon_simple");
         const allProducts = database.collection('allProducts');
+        const orderCollection = database.collection('order');
 
 
         // Get Api (load all products)----------------------
@@ -43,11 +44,27 @@ async function run() {
 
             // .limit(10) (show only first 10 products)
             // const allProduct = await cursor.toArray();
-            console.log(typeof page , size);
+
             res.send({
                 count,
                 allProduct
             });
+        })
+
+        // post product by keys
+        app.post('/allProducts/bykeys' ,async (req , res) => {
+            const keys = req.body;
+            const query = {key: {$in : keys}};
+            const products = await allProducts.find(query).toArray();
+            res.json(products);
+        });
+
+        // add order api
+        app.post('/orders' , async (req , res) => {
+            const order = req.body;
+            console.log(order);
+            const result = await orderCollection.insertOne(order);
+            res.json(result);
         })
 
     } finally {
